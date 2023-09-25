@@ -2,14 +2,16 @@ import React from "react";
 import { Col, Form, message, Row } from "antd";
 import { useNavigate } from "react-router-dom";
 import { RegisterUser } from "../../apicalls/users";
-
+import { useDispatch } from "react-redux";
+import { HideLoading, ShowLoading } from "../../redux/loadersSlice";
 function Register() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const onFinish = async (values) => {
     try {
+      dispatch(ShowLoading());
       const response = await RegisterUser(values);
-
+      dispatch(HideLoading());
       if (response.success) {
         message.success(response.message);
         navigate("/login");
@@ -17,6 +19,7 @@ function Register() {
         message.error(response.message);
       }
     } catch (error) {
+      dispatch(HideLoading());
       message.error(error.message);
     }
   };
