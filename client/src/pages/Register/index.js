@@ -1,8 +1,26 @@
 import React from "react";
-import { Col, Form, Row } from "antd";
+import { Col, Form, message, Row } from "antd";
 import { useNavigate } from "react-router-dom";
+import { RegisterUser } from "../../apicalls/users";
+
 function Register() {
   const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      const response = await RegisterUser(values);
+
+      if (response.success) {
+        message.success(response.message);
+        navigate("/login");
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   return (
     <div className="m-5">
       <div className="flex items-center justify-between">
@@ -13,7 +31,7 @@ function Register() {
         </h1>
       </div>
       <hr />
-      <Form layout="vertical">
+      <Form layout="vertical" onFinish={onFinish}>
         <Row gutter={16}>
           <Col span={6}>
             <Form.Item label="First Name" name="firstName">

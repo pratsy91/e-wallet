@@ -1,18 +1,35 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Col, Form, Row } from "antd";
+import { Col, Form, message, Row } from "antd";
+import { LoginUser } from "../../apicalls/users";
 
 function Login() {
   const navigate = useNavigate();
+
+  const onFinish = async (values) => {
+    try {
+      const response = await LoginUser(values);
+
+      if (response.success) {
+        message.success(response.message);
+        localStorage.setItem("token", response.data);
+        window.location.href = "/";
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
 
   return (
     <div className="bg-primary flex items-center justify-center h-screen">
       <div className="card w-400 p-2">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl">SHEYWALLET - LOGIN</h1>
+          <h1 className="text-2xl">E-WALLET - LOGIN</h1>
         </div>
         <hr />
-        <Form layout="vertical">
+        <Form layout="vertical" onFinish={onFinish}>
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item label="Email" name="email">
